@@ -12,13 +12,14 @@ namespace Monogmae_4___Timers_and_Sound
         private SpriteBatch _spriteBatch;
 
         Texture2D bombTexture, explosionTexture, pliersTexture;
-        Rectangle bombRect, wireRect, explosionRect, pliersRect;
+        Rectangle bombRect, wireRect, explosionRect;
 
         SpriteFont timefont;
 
         SoundEffect explode;
+        SoundEffectInstance explodeInstance;
 
-        float seconds, postBoom;
+        float seconds;
 
         bool boom = false;
 
@@ -39,13 +40,12 @@ namespace Monogmae_4___Timers_and_Sound
             bombRect = new Rectangle(50, 50, 700, 400);
             wireRect = new Rectangle(490, 160, 160, 15);
             explosionRect = new Rectangle(70, 50, 600, 400);
-            pliersRect = new Rectangle(mouseState.X, mouseState.Y, 100, 100);
+
 
             _graphics.PreferredBackBufferWidth = 800;
             _graphics.PreferredBackBufferHeight = 500;
             _graphics.ApplyChanges();
             seconds = 0f;
-            postBoom = 0f;
 
         }
 
@@ -60,20 +60,26 @@ namespace Monogmae_4___Timers_and_Sound
             pliersTexture = Content.Load<Texture2D>("pliers");
             timefont = Content.Load<SpriteFont>("TimeFont");
             explode = Content.Load<SoundEffect>("explosion");
+            explodeInstance = explode.CreateInstance();
         }
 
         protected override void Update(GameTime gameTime)
         {
             mouseState = Mouse.GetState();
-            //this.Window.Title = $"x = {mouseState.X}, y = {mouseState.Y}";
-            this.Window.Title = postBoom.ToString();
+            this.Window.Title = $"x = {mouseState.X}, y = {mouseState.Y}";
             seconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (seconds > 15)
             {
                 boom = true;
                 seconds = 0;
-                explode.Play();
+                explodeInstance.Play();
+               
+            }
+            if (boom)
+            {
+                if (explodeInstance.State == SoundState.Stopped)    
+                    Exit();
             }
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -82,8 +88,6 @@ namespace Monogmae_4___Timers_and_Sound
             // TODO: Add your update logic here
 
             base.Update(gameTime);
-            if (postBoom > 11)
-                Exit();
         }
 
         protected override void Draw(GameTime gameTime)
@@ -94,13 +98,10 @@ namespace Monogmae_4___Timers_and_Sound
             _spriteBatch.Begin();
             _spriteBatch.Draw(bombTexture, bombRect, Color.White);
             _spriteBatch.DrawString(timefont, (15 - seconds).ToString("00.0"), new Vector2(270, 200), Color.Black);
-            _spriteBatch.Draw(pliersTexture, pliersRect, Color.White);
+            _spriteBatch.Draw(pliersTexture, mouseState.X, mouseState.Y, Color.White);
             if (boom == true)
             {
-
-                postBoom += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                _spriteBatch.Draw(explosionTexture, explosionRect, Color.White);
-                
+                _spriteBatch.Draw(explosionTexture, explosionRect, Color.White);      
             }
             _spriteBatch.End();
 
