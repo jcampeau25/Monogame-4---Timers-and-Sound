@@ -23,7 +23,12 @@ namespace Monogmae_4___Timers_and_Sound
 
         bool boom = false;
 
-        MouseState mouseState;
+        bool detonated = false;
+
+        MouseState mouseState, prevMouseState;
+
+
+
 
         public Game1()
         {
@@ -65,9 +70,13 @@ namespace Monogmae_4___Timers_and_Sound
 
         protected override void Update(GameTime gameTime)
         {
+            prevMouseState = mouseState;
             mouseState = Mouse.GetState();
+
             this.Window.Title = $"x = {mouseState.X}, y = {mouseState.Y}";
-            seconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (detonated == false)
+                seconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
 
             if (seconds > 15)
             {
@@ -85,6 +94,12 @@ namespace Monogmae_4___Timers_and_Sound
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+
+            if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
+            {
+                if (wireRect.Contains(mouseState.Position));
+                    detonated = true;
+            }
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -98,7 +113,7 @@ namespace Monogmae_4___Timers_and_Sound
             _spriteBatch.Begin();
             _spriteBatch.Draw(bombTexture, bombRect, Color.White);
             _spriteBatch.DrawString(timefont, (15 - seconds).ToString("00.0"), new Vector2(270, 200), Color.Black);
-            _spriteBatch.Draw(pliersTexture, mouseState.X, mouseState.Y, Color.White);
+            _spriteBatch.Draw(pliersTexture, mouseState.Position.ToVector2(), Color.White);
             if (boom == true)
             {
                 _spriteBatch.Draw(explosionTexture, explosionRect, Color.White);      
