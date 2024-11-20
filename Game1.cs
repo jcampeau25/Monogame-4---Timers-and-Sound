@@ -34,7 +34,7 @@ namespace Monogmae_4___Timers_and_Sound
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            IsMouseVisible = true;
+            IsMouseVisible = false;
         }
 
         protected override void Initialize()
@@ -97,7 +97,7 @@ namespace Monogmae_4___Timers_and_Sound
 
             if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
             {
-                if (wireRect.Contains(mouseState.Position));
+                if (wireRect.Contains(mouseState.Position))
                     detonated = true;
             }
             // TODO: Add your update logic here
