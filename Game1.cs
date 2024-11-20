@@ -12,7 +12,7 @@ namespace Monogmae_4___Timers_and_Sound
         private SpriteBatch _spriteBatch;
 
         Texture2D bombTexture, explosionTexture, pliersTexture;
-        Rectangle bombRect, wireRect, explosionRect;
+        Rectangle bombRect, greenWireRect, explosionRect, redWireRect;
 
         SpriteFont timefont;
 
@@ -43,7 +43,8 @@ namespace Monogmae_4___Timers_and_Sound
 
             base.Initialize();
             bombRect = new Rectangle(50, 50, 700, 400);
-            wireRect = new Rectangle(490, 160, 160, 15);
+            greenWireRect = new Rectangle(490, 160, 160, 15);
+            redWireRect = new Rectangle(485, 175, 140, 25);
             explosionRect = new Rectangle(70, 50, 600, 400);
 
 
@@ -97,8 +98,18 @@ namespace Monogmae_4___Timers_and_Sound
 
             if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
             {
-                if (wireRect.Contains(mouseState.Position))
+                if (greenWireRect.Contains(mouseState.Position))
                     detonated = true;
+            }
+
+            if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
+            {
+                if (redWireRect.Contains(mouseState.Position))
+                {
+                    boom = true;
+                    seconds = 0;
+                    explodeInstance.Play();
+                }
             }
             // TODO: Add your update logic here
 
